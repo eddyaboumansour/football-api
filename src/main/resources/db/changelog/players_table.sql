@@ -1,0 +1,7 @@
+CREATE TABLE players (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    position VARCHAR NOT NULL CHECK (position IN ('FORWARD', 'MIDFIELD', 'DEFENDER', 'GOALKEEPER')),
+    team_id BIGINT REFERENCES teams(id) ON UPDATE CASCADE ON DELETE SET NULL
+);
+CREATE INDEX players_team_id ON players(id);

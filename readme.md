@@ -130,12 +130,15 @@ les équipes, ajouter une nouvelle équipe, supprimer une équipe, et récupére
 - **Liquibase** : Active par défaut pour gérer les migrations de schéma. Désactivable via
   `spring.liquibase.enabled=false` pour optimiser le démarrage de l'application.
 
+## Choix Techniques
+
 ----------
+
 
 ### **1. Spring Boot 3.1.5**
 
-Spring Boot est un framework robuste qui simplifie le développement d’applications Java, notamment les API REST. La
-version 3.1.5 apporte des améliorations de performance et une meilleure compatibilité avec Jakarta EE 10.
+J’ai choisi **Spring Boot** pour simplifier le développement d’applications Java, notamment des API REST. La version
+3.1.5 apporte des améliorations de performance et une meilleure compatibilité avec Jakarta EE 10.
 
 #### 🔹 **Cas d’usage :**
 
@@ -146,8 +149,8 @@ version 3.1.5 apporte des améliorations de performance et une meilleure compati
 
 ### **2. JPA (Java Persistence API)**
 
-JPA est une spécification Java standard permettant de gérer la persistance des objets métier dans des bases de données
-relationnelles. Elle est généralement implémentée par Hibernate.
+J’ai choisi **JPA** pour gérer la persistance des objets métier dans une base de données relationnelle. Il s’agit d’une
+spécification standard généralement implémentée par Hibernate.
 
 #### 🔹 **Cas d’usage :**
 
@@ -156,16 +159,22 @@ relationnelles. Elle est généralement implémentée par Hibernate.
 - **Requêtes simplifiées** : Utilisation de `@Query` avec Spring Data JPA pour exécuter des requêtes spécifiques sans
   écrire de SQL complexe.
 - **Gestion des relations** : Définition des relations entre entités (`@OneToMany`, `@ManyToOne`, `@ManyToMany`) pour
-  structurer la base de données de manière efficace.
+  structurer la base de données efficacement.
 - **Pagination et tri** : Utilisation de `Pageable` pour récupérer des résultats paginés et triés sans surcharge de la
   base de données.
+- **Gestion des transactions** : Utilisation des annotations @Transactional pour garantir l’intégrité des données lors
+  des opérations critiques.
+- **Utilisation de `EntityGraph` pour éviter le problème "N + 1"** : Cela permet de charger les joueurs associés en une
+  seule requête lors de la récupération des équipes. La propriété `spring.jpa.show-sql` est désactivée par défaut.
+- **Création d’un index sur le champ `team_id`** : Cela permet d’effectuer des requêtes rapides pour obtenir les joueurs
+  par équipe et permettre de facilement set le team_id à null lors de la suppression d’une équipe.
 
 ----------
 
 ### **3. Hibernate**
 
-Hibernate est un ORM (Object-Relational Mapping) qui implémente JPA et facilite la gestion des données en évitant
-d’écrire des requêtes SQL complexes.
+J’ai choisi **Hibernate** comme implémentation de JPA pour faciliter la gestion des données en évitant d’écrire des
+requêtes SQL complexes.
 
 #### 🔹 **Cas d’usage :**
 
@@ -174,13 +183,15 @@ d’écrire des requêtes SQL complexes.
   base de données.
 - **Gestion des transactions** : Utilisation des annotations `@Transactional` pour garantir l’intégrité des données lors
   des opérations critiques.
+- **Validation des paramètres avec Hibernate Validation** : Hibernate Validation est utilisé pour vérifier la validité
+  des paramètres des requêtes.
 
 ----------
 
 ### **4. Base de Données PostgreSQL**
 
-PostgreSQL est une base de données relationnelle open-source reconnue pour sa fiabilité, sa scalabilité et son
-intégration native avec Spring Data JPA.
+J’ai choisi **PostgreSQL** comme base de données relationnelle pour sa fiabilité, sa scalabilité et son intégration
+native avec Spring Data JPA.
 
 #### 🔹 **Cas d’usage :**
 
@@ -191,14 +202,17 @@ intégration native avec Spring Data JPA.
 
 ### **5. Liquibase**
 
-Liquibase permet de versionner et de gérer les évolutions du schéma de base de données de manière automatisée, évitant
-les interventions manuelles.
+J’ai choisi **Liquibase** pour versionner et gérer les évolutions du schéma de base de données de manière automatisée,
+évitant les interventions manuelles.
 
 #### 🔹 **Cas d’usage :**
 
 - **Automatisation des migrations** : Définition des changements de structure via des fichiers YAML, XML ou SQL
-  appliqués automatiquement.
-- **Rollback des versions** : Restauration d’une version précédente en cas d’erreur de déploiement sur un environnement.
+  appliqués automatiquement (Les fichiers sont présent dans db.changelog).
+- **Rollback des versions** : Restauration d’une version précédente en cas d’erreur de déploiement sur un environnement
+  à travers le changelog.
+- **Suivi des changements** : Chaque modification est enregistrée dans une table de suivi, garantissant une traçabilité
+  complète des évolutions de la base de données.
 - **Synchronisation des bases sur plusieurs environnements** : Assurer que la base de données en production, en test et
   en développement reste cohérente.
 
@@ -206,8 +220,8 @@ les interventions manuelles.
 
 ### **6. MapStruct**
 
-MapStruct est un générateur de code qui facilite le mapping entre objets Java, notamment entre les entités et les DTOs (
-Data Transfer Objects).
+J’ai choisi **MapStruct** pour automatiser le mapping entre entités et DTOs avec PlayerMapper et TeamMapper, réduisant
+ainsi le code répétitif et accélérant le développement.
 
 #### 🔹 **Cas d’usage :**
 
@@ -221,8 +235,8 @@ Data Transfer Objects).
 
 ### **7. Lombok**
 
-Lombok réduit le code standard (boilerplate) en générant automatiquement des méthodes comme les getters, setters, et
-constructeurs, grâce à des annotations.
+J’ai choisi **Lombok** pour réduire le code standard (boilerplate) en générant automatiquement des méthodes comme les
+getters, setters et constructeurs grâce à des annotations.
 
 #### 🔹 **Cas d’usage :**
 
@@ -234,8 +248,8 @@ constructeurs, grâce à des annotations.
 
 ### **8. SpringDoc OpenAPI**
 
-SpringDoc OpenAPI simplifie la documentation des API REST en générant automatiquement une interface Swagger UI
-accessible aux développeurs.
+J’ai choisi **SpringDoc OpenAPI** pour documenter les API REST et permettre de tester facilement les endpoints via une
+interface Swagger.
 
 #### 🔹 **Cas d’usage :**
 
@@ -250,8 +264,7 @@ accessible aux développeurs.
 
 ### **9. JUnit et Mockito**
 
-JUnit est un framework de tests unitaires pour Java, tandis que Mockito permet de simuler des dépendances pour tester
-isolément des composants.
+J’ai choisi **JUnit et Mockito** pour tester mon application en isolant les composants et en simulant les dépendances.
 
 #### 🔹 **Cas d’usage :**
 
@@ -261,6 +274,7 @@ isolément des composants.
   réelles ou d’autres services.
 - **Tests d’intégration** : Validation du comportement global des API en s’assurant que les différentes couches
   interagissent correctement.
+- **Scénario couvert** : Création d’une équipe avec des joueurs, puis suppression de l’équipe.
 
 ## Installation et Exécution
 
